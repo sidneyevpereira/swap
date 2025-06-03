@@ -1,0 +1,25 @@
+function Show-Tree {
+    param (
+        [string]$Path = ".",
+        [string]$Prefix = ""
+    )
+
+    $items = Get-ChildItem -LiteralPath $Path
+    $lastIndex = $items.Count - 1
+
+    for ($i = 0; $i -lt $items.Count; $i++) {
+        $item = $items[$i]
+        $isLast = ($i -eq $lastIndex)
+        $branch = if ($isLast) { "└── " } else { "├── " }
+
+        Write-Host "$Prefix$branch$item"
+
+        if ($item.PSIsContainer) {
+            $newPrefix = $Prefix + (if ($isLast) { "    " } else { "│   " })
+            Show-Tree -Path $item.FullName -Prefix $newPrefix
+        }
+    }
+}
+
+# Executa a função no diretório atual
+Show-Tree
