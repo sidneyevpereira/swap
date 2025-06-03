@@ -4,7 +4,12 @@ function Show-Tree {
         [string]$Prefix = ""
     )
 
-    $items = Get-ChildItem -LiteralPath $Path
+    $items = Get-ChildItem -LiteralPath $Path -Force |
+        Where-Object {
+            -not $_.Attributes.ToString().Contains("Hidden") -and
+            -not ($_.Name -like ".*")
+        }
+
     $lastIndex = $items.Count - 1
 
     for ($i = 0; $i -lt $items.Count; $i++) {
@@ -12,14 +17,14 @@ function Show-Tree {
         $isLast = ($i -eq $lastIndex)
         $branch = if ($isLast) { "└── " } else { "├── " }
 
-        Write-Host "$Prefix$branch$item"
+        Write-Host "$Prefix$branch$($item.Name)"
 
         if ($item.PSIsContainer) {
-            $newPrefix = $Prefix + (if ($isLast) { "    " } else { "│   " })
+            $newPrefix = if ($isLast) { "$Prefix    " } else { "$Prefix│   " }
             Show-Tree -Path $item.FullName -Prefix $newPrefix
         }
     }
 }
 
-# Executa a função no diretório atual
+# Executa
 Show-Tree
