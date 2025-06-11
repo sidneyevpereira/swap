@@ -28,3 +28,30 @@ function Show-Tree {
 
 # Executa
 Show-Tree
+
+
+--------------
+
+
+<powershell>
+# Iniciar e configurar SSM
+Set-Service -Name AmazonSSMAgent -StartupType Automatic
+Start-Service AmazonSSMAgent
+
+# Habilitar RDP
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
+
+# Liberar porta 3389 no firewall
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+# Ativar conta Administrator
+net user Administrator /active:yes
+
+# (Opcional) Criar novo usuário administrador
+net user DevOpsRecovery 1q2w3e4r5t! /add
+net localgroup Administrators DevOpsRecovery /add
+
+# Log para validação
+"SSM e RDP habilitados via user-data em $(Get-Date)" >> C:\ssm_user_data_log.txt
+</powershell>
+
