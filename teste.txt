@@ -51,6 +51,23 @@ net user Administrator /active:yes
 net user DevOpsRecovery 1q2w3e4r5t! /add
 net localgroup Administrators DevOpsRecovery /add
 
+
+-----------
+
+aws imagebuilder import-disk-image \
+  --name "windows11-enterprise-24H2" \
+  --semantic-version "1.0.0" \
+  --description "Importação de ISO Windows 11 Enterprise 24H2" \
+  --platform Windows \
+  --os-version "Microsoft Windows 11" \
+  --execution-role "arn:aws:iam::123456789012:role/AWSServiceRoleForImageBuilder" \
+  --infrastructure-configuration-arn "arn:aws:imagebuilder:sa-east-1:123456789012:infrastructure-configuration/windows11-import-infra" \
+  --uri "s3://meu-bucket/path/Win11_24H2_English.ISO" \
+  --tags Key1=Value1,Key2=Value2 \
+  --client-token "import-win11-$(date +%Y%m%d)" \
+  --region sa-east-1
+
+
 # Log para validação
 "SSM e RDP habilitados via user-data em $(Get-Date)" >> C:\ssm_user_data_log.txt
 </powershell>
